@@ -1,0 +1,86 @@
+/* Page background */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f4f6f8;
+  font-family: Arial, sans-serif;
+}
+
+/* Login card */
+.login-card {
+  background: #ffffff;
+  padding: 30px;
+  width: 340px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Heading */
+.login-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Error message */
+.login-error {
+  color: #d32f2f;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* Form */
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Inputs */
+.login-card input {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+}
+
+.login-card input:focus {
+  border-color: #1e88e5;
+}
+
+/* Button */
+.login-card button {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #1e88e5;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.login-card button:hover {
+  background-color: #1565c0;
+}
+
+/* Register text */
+.login-footer {
+  text-align: center;
+  font-size: 14px;
+  margin-top: 12px;
+  color: #555;
+}
+
+.login-footer span {
+  color: #1e88e5;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.login-footer span:hover {
+  text-decoration: underline;
+}

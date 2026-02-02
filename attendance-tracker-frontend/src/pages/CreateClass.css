@@ -1,0 +1,50 @@
+/* ===== Page Layout ===== */
+.create-page {
+  min-height: 100vh;
+  background-color: #f5f7fa;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, sans-serif;
+}
+
+/* ===== Card ===== */
+.create-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 8px;
+  width: 320px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Heading ===== */
+.create-card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ===== Inputs ===== */
+.create-card input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+/* ===== Button ===== */
+.create-card button {
+  width: 100%;
+  padding: 10px;
+  background-color: #1976d2;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.create-card button:hover {
+  background-color: #155fa0;
+}

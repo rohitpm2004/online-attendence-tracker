@@ -1,0 +1,125 @@
+/* Page background */
+.join-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+/* Card */
+.join-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 380px;
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+/* Heading */
+.join-card h2 {
+  margin-bottom: 6px;
+  color: #1e293b;
+}
+
+/* Class code */
+.join-card p {
+  font-size: 14px;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+/* Success message */
+.success {
+  background: #dcfce7;
+  color: #166534;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Error message */
+.error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Meet link */
+.meet-link {
+  display: block;
+  margin: 10px 0;
+  color: #2563eb;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.meet-link:hover {
+  text-decoration: underline;
+}
+
+/* Form */
+.join-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* Inputs & select */
+.join-form input,
+.join-form select {
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #cbd5f5;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* Focus effect */
+.join-form input:focus,
+.join-form select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* Button */
+.join-form button {
+  margin-top: 8px;
+  padding: 11px;
+  font-size: 15px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.join-form button:hover {
+  background: #1d4ed8;
+}
+
+.join-form button:active {
+  transform: scale(0.98);
+}
+.countdown {
+  color: #1e88e5;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.expired {
+  color: red;
+  font-weight: bold;
+  margin: 15px 0;
+}

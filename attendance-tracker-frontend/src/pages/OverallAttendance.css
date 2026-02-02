@@ -1,0 +1,87 @@
+/* Page container */
+.overall-page {
+  padding: 30px;
+  background: #f4f6f8;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+/* Heading */
+.overall-page h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Export button */
+.export-btn {
+  background-color: #1e88e5;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.export-btn:hover {
+  background-color: #1565c0;
+}
+
+/* Table wrapper */
+.table-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+/* Table */
+.overall-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* Table header */
+.overall-table thead {
+  background-color: #f1f3f6;
+}
+
+.overall-table th {
+  padding: 12px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+}
+
+/* Table body */
+.overall-table td {
+  padding: 10px;
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+/* Row hover */
+.overall-table tbody tr:hover {
+  background-color: #f9fafc;
+}
+
+/* Empty state */
+.no-data {
+  text-align: center;
+  color: #777;
+  padding: 20px;
+}
+.btn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+}
+.btn:hover {
+  background-color: #155fa0;
+}
