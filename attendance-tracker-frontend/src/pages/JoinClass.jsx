@@ -78,7 +78,7 @@ const JoinClass = () => {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/attendance/mark",
+        "https://online-attendence-tracker-4.onrender.com/api/attendance/mark",
         { ...formData, classCode }
       );
 
