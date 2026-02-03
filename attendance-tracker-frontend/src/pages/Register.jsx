@@ -19,7 +19,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      await axios.post("https://online-attendence-tracker-1.onrender.com/api/teachers/register", form);
+      await axios.post("https://online-attendence-tracker-4.onrender.com/api/teachers/register", form);
       alert("Registration successful");
       navigate("/");
     } catch (err) {
