@@ -27,7 +27,7 @@ const JoinClass = () => {
   /* ================= FETCH CLASS INFO ================= */
   useEffect(() => {
     axios
-      .get(`https://online-attendence-tracker-1.onrender.com/api/classes/by-code/${classCode}`)
+      .get(`https://online-attendence-tracker-4.onrender.com/api/classes/by-code/${classCode}`)
       .then((res) => setClassInfo(res.data))
       .catch(() => setExpired(true));
   }, [classCode]);
