@@ -109,7 +109,7 @@ const handleDelete = async (classId) => {
             
             <a
              className="join-link"
-              href={`http://localhost:5173/join/${cls.classCode}`}
+              href={`https://online-attendence-tracker-06.onrender.com/api/join/${cls.classCode}`}
               target="_blank"
               rel="noreferrer"
             >
