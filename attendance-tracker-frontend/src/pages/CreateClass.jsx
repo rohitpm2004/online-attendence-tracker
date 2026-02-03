@@ -21,15 +21,23 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await API.post("/classes/create", form);
+    const utcExpiresAt = new Date(form.expiresAt).toISOString();
+
+    const res = await API.post("/classes/create", {
+      ...form,
+      expiresAt: utcExpiresAt,
+    });
 
     alert("Class created successfully");
 
-    navigate(`/class/${res.data._id}`);
+    // ✅ use classCode (not _id)
+    navigate(`/class/${res.data.classCode}`);
   } catch (err) {
     alert(err.response?.data?.message || "Failed to create class");
   }
 };
+
+
 
 
 
