@@ -34,13 +34,14 @@
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  overflow-x: auto;
+  overflow-x: auto; /* ✅ enables horizontal scroll on mobile */
 }
 
 /* Table */
 .overall-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 600px; /* ✅ keeps columns readable */
 }
 
 /* Table header */
@@ -74,6 +75,8 @@
   color: #777;
   padding: 20px;
 }
+
+/* Buttons */
 .btn {
   padding: 8px 14px;
   border: none;
@@ -82,6 +85,57 @@
   color: white;
   cursor: pointer;
 }
+
 .btn:hover {
   background-color: #155fa0;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .overall-page {
+    padding: 15px;
+  }
+
+  .overall-page h2 {
+    font-size: 20px;
+  }
+
+  .export-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 15px;
+  }
+
+  .table-container {
+    padding: 15px;
+  }
+
+  .overall-table th,
+  .overall-table td {
+    font-size: 13px;
+    padding: 8px;
+  }
+}
+
+/* 📱 Small phones */
+@media (max-width: 480px) {
+  .overall-page h2 {
+    font-size: 18px;
+  }
+
+  .overall-table th,
+  .overall-table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+}
+
+/* 💻 Large screens */
+@media (min-width: 1024px) {
+  .overall-page {
+    max-width: 1200px;
+    margin: auto;
+  }
 }
