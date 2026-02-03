@@ -6,13 +6,15 @@
   align-items: center;
   background: #f4f6f8;
   font-family: Arial, sans-serif;
+  padding: 15px; /* ✅ mobile spacing */
 }
 
 /* Card */
 .register-card {
   background: #ffffff;
   padding: 30px;
-  width: 340px;
+  width: 100%;
+  max-width: 360px; /* ✅ responsive width */
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
@@ -22,6 +24,7 @@
   text-align: center;
   margin-bottom: 20px;
   color: #333;
+  font-size: 20px;
 }
 
 /* Form */
@@ -47,7 +50,7 @@
 /* Button */
 .register-card button {
   margin-top: 10px;
-  padding: 10px;
+  padding: 11px;
   background-color: #1e88e5;
   color: #ffffff;
   border: none;
@@ -60,7 +63,7 @@
   background-color: #1565c0;
 }
 
-/* Small text / links (optional) */
+/* Small text / links */
 .register-footer {
   text-align: center;
   margin-top: 12px;
@@ -75,4 +78,45 @@
 
 .register-footer a:hover {
   text-decoration: underline;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* 📱 Small phones */
+@media (max-width: 480px) {
+  .register-card {
+    padding: 22px;
+  }
+
+  .register-card h2 {
+    font-size: 18px;
+  }
+
+  .register-card input {
+    font-size: 13px;
+    padding: 9px;
+  }
+
+  .register-card button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .register-footer {
+    font-size: 12px;
+  }
+}
+
+/* 📱 Tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+  .register-card {
+    max-width: 380px;
+  }
+}
+
+/* 💻 Large screens */
+@media (min-width: 1024px) {
+  .register-card {
+    max-width: 380px;
+  }
 }
