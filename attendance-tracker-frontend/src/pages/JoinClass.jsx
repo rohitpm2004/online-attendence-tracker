@@ -73,34 +73,41 @@ const JoinClass = () => {
 
   /* ================= SUBMIT ================= */
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (expired) return;
+  e.preventDefault();
+  if (expired) return;
 
-    try {
-      const res = await axios.post(
-        "https://online-attendence-tracker-4.onrender.com/api/attendance/mark",
-        { ...formData, classCode }
-      );
+  try {
+    const token = localStorage.getItem("token"); // 👈 must exist
 
-      // ✅ SAVE / UPDATE STUDENT PROFILE
-      localStorage.setItem(
-        "studentProfile",
-        JSON.stringify(formData)
-      );
-
-      setMessage(res.data.message);
-      setError("");
-
-      if (res.data.meetLink) {
-        window.open(res.data.meetLink, "_blank");
+    const res = await axios.post(
+      "https://online-attendence-tracker-4.onrender.com/api/attendance/mark",
+      { ...formData, classCode },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    } catch (err) {
-      setError(
-        err.response?.data?.message ||
-        "Something went wrong"
-      );
+    );
+
+    localStorage.setItem(
+      "studentProfile",
+      JSON.stringify(formData)
+    );
+
+    setMessage(res.data.message);
+    setError("");
+
+    if (res.data.meetLink) {
+      window.open(res.data.meetLink, "_blank");
     }
-  };
+  } catch (err) {
+    setError(
+      err.response?.data?.message ||
+      "Something went wrong"
+    );
+  }
+};
+
 
   return (
     <div className="join-page">
