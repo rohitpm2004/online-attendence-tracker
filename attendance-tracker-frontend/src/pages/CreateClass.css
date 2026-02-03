@@ -6,6 +6,7 @@
   justify-content: center;
   align-items: center;
   font-family: Arial, sans-serif;
+  padding: 15px; /* ✅ mobile spacing */
 }
 
 /* ===== Card ===== */
@@ -13,7 +14,8 @@
   background: #ffffff;
   padding: 25px;
   border-radius: 8px;
-  width: 320px;
+  width: 100%;
+  max-width: 360px; /* ✅ responsive width */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
 }
 
@@ -21,6 +23,7 @@
 .create-card h2 {
   text-align: center;
   margin-bottom: 20px;
+  font-size: 20px;
 }
 
 /* ===== Inputs ===== */
@@ -36,7 +39,7 @@
 /* ===== Button ===== */
 .create-card button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background-color: #1976d2;
   color: white;
   border: none;
@@ -47,4 +50,34 @@
 
 .create-card button:hover {
   background-color: #155fa0;
+}
+
+/* ================= RESPONSIVE BREAKPOINTS ================= */
+
+/* 📱 Small phones */
+@media (max-width: 480px) {
+  .create-card {
+    padding: 20px;
+  }
+
+  .create-card h2 {
+    font-size: 18px;
+  }
+
+  .create-card input {
+    font-size: 13px;
+    padding: 9px;
+  }
+
+  .create-card button {
+    font-size: 14px;
+    padding: 11px;
+  }
+}
+
+/* 📱 Tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+  .create-card {
+    max-width: 380px;
+  }
 }
