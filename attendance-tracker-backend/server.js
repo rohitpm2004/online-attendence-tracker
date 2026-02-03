@@ -30,7 +30,6 @@ app.get("/", (req, res) => {
 app.use("/api/teachers", teacherRoutes); 
 app.use("/api/classes", classRoutes);
 app.use("/api/attendance", attendanceRoutes);
-app.use("/api/classes", classRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () =>
