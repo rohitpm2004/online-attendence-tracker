@@ -36,7 +36,9 @@
   font-weight: bold;
   text-decoration: none;
   margin-left: 10px;
+  word-break: break-all; /* ✅ long links don’t overflow */
 }
+
 .join-link:hover {
   text-decoration: underline;
 }
@@ -50,8 +52,10 @@
   border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  white-space: nowrap;
 }
 
+/* Button colors */
 .btn-view {
   background-color: #1976d2;
   color: white;
@@ -69,6 +73,7 @@
 .btn-create:hover {
   background-color: #1b5e20;
 }
+
 /* ===== Logout Button ===== */
 .logout-btn {
   background-color: #d32f2f;
@@ -78,10 +83,71 @@
 .logout-btn:hover {
   background-color: #b71c1c;
 }
+
 .btn.danger {
   background: #e53935;
   color: white;
 }
+
 .btn.danger:hover {
   background: #c62828;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 12px;
+  }
+
+  .dashboard h2 {
+    font-size: 20px;
+  }
+
+  .class-card {
+    padding: 12px;
+  }
+
+  .class-card h3 {
+    font-size: 16px;
+  }
+
+  .class-card p {
+    font-size: 14px;
+  }
+
+  /* Buttons stack on mobile */
+  .btn {
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .join-link {
+    display: block;
+    margin: 6px 0 0;
+  }
+}
+
+/* 📱 Small phones */
+@media (max-width: 480px) {
+  .dashboard h2 {
+    font-size: 18px;
+  }
+
+  .class-card h3 {
+    font-size: 15px;
+  }
+
+  .class-card p {
+    font-size: 13px;
+  }
+}
+
+/* 💻 Desktop wide */
+@media (min-width: 1024px) {
+  .dashboard {
+    max-width: 1200px;
+    margin: auto;
+  }
 }
