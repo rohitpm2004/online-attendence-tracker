@@ -25,11 +25,12 @@
   color: #1e293b;
 }
 
-/* Class code */
+/* Class code / text */
 .join-card p {
   font-size: 14px;
   color: #475569;
   margin-bottom: 12px;
+  word-wrap: break-word; /* ✅ prevents overflow */
 }
 
 /* Success message */
@@ -59,6 +60,7 @@
   color: #2563eb;
   font-weight: 500;
   text-decoration: none;
+  word-break: break-all; /* ✅ long links don’t break layout */
 }
 
 .meet-link:hover {
@@ -112,6 +114,8 @@
 .join-form button:active {
   transform: scale(0.98);
 }
+
+/* Countdown & expiry */
 .countdown {
   color: #1e88e5;
   font-weight: bold;
@@ -122,4 +126,48 @@
   color: red;
   font-weight: bold;
   margin: 15px 0;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* 📱 Mobile */
+@media (max-width: 480px) {
+  .join-card {
+    padding: 20px;
+  }
+
+  .join-card h2 {
+    font-size: 18px;
+  }
+
+  .join-card p,
+  .success,
+  .error {
+    font-size: 13px;
+  }
+
+  .join-form input,
+  .join-form select {
+    font-size: 13px;
+    padding: 9px 10px;
+  }
+
+  .join-form button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+/* 📱 Tablets */
+@media (min-width: 481px) and (max-width: 768px) {
+  .join-card {
+    max-width: 420px;
+  }
+}
+
+/* 💻 Large screens */
+@media (min-width: 1024px) {
+  .join-card {
+    max-width: 420px;
+  }
 }
