@@ -1,6 +1,45 @@
-* {
+/* ===== Global Reset ===== */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+/* ===== Base Styles ===== */
+html {
+  font-size: 16px; /* base for rem units */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
   font-family: Arial, sans-serif;
+  line-height: 1.5;
+  background-color: #fff;
+  color: #222;
+}
+
+/* ===== Images & Media ===== */
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ===== Inputs & Buttons ===== */
+input,
+button,
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* ===== Mobile optimization ===== */
+@media (max-width: 480px) {
+  html {
+    font-size: 15px; /* slightly smaller base text on small phones */
+  }
 }
