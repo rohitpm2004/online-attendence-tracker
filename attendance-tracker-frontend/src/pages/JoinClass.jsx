@@ -151,13 +151,19 @@ const JoinClass = () => {
               required
             />
 
-            <input
+            <select
               name="group"
-              placeholder="Group"
               value={formData.group}
               onChange={handleChange}
               required
-            />
+            >
+            <option value="">Select Group</option>
+            <option value="BSC">BSC</option>
+            <option value="BCOM">Bcom</option>
+            <option value="BA">BA</option>
+            <option value="BCA">BCA</option>
+          </select>
+
 
             <select
               name="college"
@@ -165,15 +171,14 @@ const JoinClass = () => {
               onChange={handleChange}
               required
             >
-              <option value="">Select College</option>
-              <option value="CITY COLLEGE">City College</option>
-              <option value="VIVEKANANDA COLLEGE">Vivekananda College</option>
-              <option value="BJR COLLEGE">BJR College</option>
+                <option value="">Select College</option>
+                <option value="CITY COLLEGE">City College</option>
+                <option value="VIVEKANANDA COLLEGE">Vivekananda College</option>
+                <option value="BJR COLLEGE">BJR College</option>
                 <option value="MALKAJIGIRI COLLEGE">Malkajigiri College</option>
                 <option value="GOLCONDA COLLEGE">Golconda College</option>
                 <option value="HUSSAINI ALAM COLLEGE">Hussaini Alam College</option>
                 <option value="BEGUMPET COLLEGE">Begumpet College</option>
-              <option value="OTHER">Other</option>
             </select>
 
             <button type="submit">Mark Attendance</button>
