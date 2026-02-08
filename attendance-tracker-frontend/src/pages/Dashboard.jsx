@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import API from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import "./Dashboard.css";
 
 function Dashboard() {
   const [classes, setClasses] = useState([]);
   const navigate = useNavigate();
+
+  /* ================= FETCH CLASSES ================= */
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -20,133 +22,118 @@ function Dashboard() {
     fetchClasses();
   }, []);
 
+  /* ================= LOGOUT ================= */
 
   const handleLogout = () => {
-  localStorage.removeItem("token");
-  navigate("/");
+    localStorage.removeItem("token");
+    navigate("/");
   };
 
-const handleDelete = async (classId) => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this class?\nAll attendance will be lost!"
-  );
+  /* ================= DELETE CLASS ================= */
 
-  if (!confirmDelete) return;
+  const handleDelete = async (classId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this class?\nAll attendance will be lost!"
+    );
 
-  try {
-    await API.delete(`/classes/delete/${classId}`);
-    alert("Class deleted successfully");
+    if (!confirmDelete) return;
 
-    // 🔄 Refresh classes
-    setClasses(prev => prev.filter(c => c._id !== classId));
+    try {
+      await API.delete(`/classes/delete/${classId}`);
 
-  } catch (err) {
-    alert(err.response?.data?.message || "Delete failed");
-  }
-};
+      // remove class locally (no reload)
+      setClasses(prev => prev.filter(c => c._id !== classId));
 
+      alert("Class deleted successfully");
+    } catch (err) {
+      alert(err.response?.data?.message || "Delete failed");
+    }
+  };
+
+  /* ================= UI ================= */
 
   return (
-    <div className="dashboard">
-      <button
+  <div className="dashboard">
+
+    {/* TOP BAR */}
+    <div className="dashboard-top">
+      <h2 className="class-h2">My Classes</h2>
+
+      <div className="dashboard-actions">
+        <button
           className="btn btn-create"
           onClick={() => navigate("/create-class")}
         >
-          + Create New Class
+          + Create Class
         </button>
+
         <button
-        className="btn"
-        onClick={() => navigate("/overall-attendance")}
+          className="btn btn-view"
+          onClick={() => navigate("/overall-attendance")}
         >
-        Overall Attendance
+          Attendance
         </button>
-     <button
-  className="btn logout-btn"
-  style={{ float: "right", marginBottom: "10px" }}
-  onClick={handleLogout}
->
-  Logout
-</button> 
- 
-      <h2>My Classes</h2>    
+      </div>
+    </div>
 
-      {classes.length === 0 && (
-  <div style={{ textAlign: "center", marginTop: "30px" }}>
-    <p>No classes created yet.</p>
+    {/* EMPTY STATE */}
+    {classes.length === 0 && (
+      <div className="empty-state">
+        <p>No classes created yet</p>
+        <button
+          className="btn btn-create"
+          onClick={() => navigate("/create-class")}
+        >
+          Create First Class
+        </button>
+      </div>
+    )}
 
-    <button
-      className="btn btn-create"
-      onClick={() => navigate("/create-class")}
-      style={{ marginTop: "10px" }}
-    >
-      + Create Your First Class
-    </button>
-    <button
-  className="btn"
-  onClick={() => navigate("/overall-attendance")}
->
-  Overall Attendance
-</button>
-
-  </div>
-)}
-
-
+    {/* CLASSES GRID */}
+    <div className="classes-grid">
       {classes.map((cls) => (
-        <div
-          key={cls._id}
-          className="class-card">
-        
-          <h3>{cls.className}</h3>
-          <p>Subject: {cls.subject}</p>
-          <p>
-            Class Code: <b>{cls.classCode}</b>
-          </p>
+        <div key={cls._id} className="class-card">
 
-          {/* ✅ STUDENT JOIN LINK */}
-          <p>
-            Student Join Link:
-            
-            <a
-             className="join-link"
-              href={`http://localhost:5173/join/${cls.classCode}`}
-              target="_blank"
-              rel="noreferrer"
+          <div className="class-info">
+            <h3>{cls.className}</h3>
+            <p>Subject: {cls.subject}</p>
+            <p>Code: <b>{cls.classCode}</b></p>
+
+            <Link to={`/join/${cls.classCode}`} className="join-btn">
+              Student Join Link
+            </Link>
+          </div>
+
+          <div className="card-actions">
+            <button
+              className="btn btn-view"
+              onClick={() => navigate(`/class/${cls._id}`)}
             >
-              Join Here
-            </a>
-          </p>
+              View
+            </button>
 
-           <button
-              className="btn"
-              style={{ marginLeft: "10px" }}
+            <button
+              className="btn btn-create"
               onClick={() => navigate(`/edit-class/${cls._id}`)}
             >
-              ✏️ Edit Class
+              Edit
             </button>
+
             <button
               className="btn danger"
-              style={{ marginLeft: "10px" }}
               onClick={() => handleDelete(cls._id)}
             >
-              🗑 Delete
+              Delete
             </button>
-
-
-          <button
-          className="btn btn-view"
-          onClick={() => navigate(`/class/${cls._id}`)}
-        >
-          View Attendance
-        </button>
-
-        
-        
+          </div>
 
         </div>
       ))}
     </div>
-  );
+
+  </div>
+);
+
 }
 
 export default Dashboard;

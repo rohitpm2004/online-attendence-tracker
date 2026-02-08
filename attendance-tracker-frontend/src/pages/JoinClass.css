@@ -1,62 +1,85 @@
-/* Page background */
+/* ================= COLORS ================= */
+
+:root {
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --bg: #F8FAFC;
+  --card: #FFFFFF;
+  --border: #E5E7EB;
+  --text: #111827;
+  --subtext: #6B7280;
+  --success: #10B981;
+  --success-bg: #ECFDF5;
+  --danger: #EF4444;
+  --danger-bg: #FEF2F2;
+}
+
+/* ================= PAGE ================= */
+
 .join-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #eef2ff, #f8fafc);
+  background: linear-gradient(180deg, #EEF2FF 0%, #F8FAFC 100%);
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
 }
 
-/* Card */
+/* ================= CARD ================= */
+
 .join-card {
-  background: #ffffff;
+  background: var(--card);
   width: 100%;
-  max-width: 380px;
-  padding: 28px;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  max-width: 420px;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
   text-align: center;
 }
 
-/* Heading */
+/* ================= TEXT ================= */
+
 .join-card h2 {
   margin-bottom: 6px;
-  color: #1e293b;
+  color: var(--text);
+  font-weight: 600;
 }
 
-/* Class code */
 .join-card p {
   font-size: 14px;
-  color: #475569;
-  margin-bottom: 12px;
+  color: var(--subtext);
+  margin-bottom: 14px;
 }
 
-/* Success message */
+/* ================= STATUS ================= */
+
 .success {
-  background: #dcfce7;
-  color: #166534;
-  padding: 8px;
-  border-radius: 6px;
+  background: var(--success-bg);
+  color: var(--success);
+  padding: 10px;
+  border-radius: 10px;
   font-size: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #BBF7D0;
 }
 
-/* Error message */
 .error {
-  background: #fee2e2;
-  color: #991b1b;
-  padding: 8px;
-  border-radius: 6px;
+  background: var(--danger-bg);
+  color: var(--danger);
+  padding: 10px;
+  border-radius: 10px;
   font-size: 14px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  border: 1px solid #FECACA;
 }
 
-/* Meet link */
+/* ================= MEET LINK ================= */
+
 .meet-link {
-  display: block;
-  margin: 10px 0;
-  color: #2563eb;
+  display: inline-block;
+  margin: 12px 0;
+  color: var(--primary);
   font-weight: 500;
   text-decoration: none;
 }
@@ -65,61 +88,95 @@
   text-decoration: underline;
 }
 
-/* Form */
+/* ================= FORM ================= */
+
 .join-form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 10px;
+  gap: 14px;
+  margin-top: 12px;
 }
 
-/* Inputs & select */
+/* INPUTS */
+
 .join-form input,
 .join-form select {
-  padding: 10px 12px;
+  padding: 12px 14px;
   font-size: 14px;
-  border-radius: 6px;
-  border: 1px solid #cbd5f5;
+  border-radius: 10px;
+  border: 1px solid var(--border);
   outline: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s ease;
 }
 
-/* Focus effect */
+.join-form input::placeholder {
+  color: var(--subtext);
+}
+
+/* Focus */
+
 .join-form input:focus,
 .join-form select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
-/* Button */
+/* BUTTON */
+
 .join-form button {
   margin-top: 8px;
-  padding: 11px;
+  padding: 12px;
   font-size: 15px;
-  background: #2563eb;
+  background: var(--primary);
   color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   cursor: pointer;
   font-weight: 500;
-  transition: background 0.2s, transform 0.1s;
+  transition: all 0.2s ease;
 }
 
 .join-form button:hover {
-  background: #1d4ed8;
+  background: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
 .join-form button:active {
-  transform: scale(0.98);
+  transform: translateY(0);
 }
+
+/* ================= COUNTDOWN ================= */
+
 .countdown {
-  color: #1e88e5;
-  font-weight: bold;
+  color: var(--primary);
+  font-weight: 600;
   margin-bottom: 10px;
 }
 
 .expired {
-  color: red;
-  font-weight: bold;
+  color: var(--danger);
+  font-weight: 600;
   margin: 15px 0;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 480px) {
+
+  .join-card {
+    padding: 22px;
+    border-radius: 14px;
+  }
+
+  .join-card h2 {
+    font-size: 20px;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .join-card {
+    max-width: 460px;
+    padding: 36px;
+  }
 }

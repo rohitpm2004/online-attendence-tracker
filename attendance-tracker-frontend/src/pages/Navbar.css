@@ -1,0 +1,148 @@
+/* ================= NAVBAR ================= */
+
+.navbar {
+  height: 70px;
+  width: 100%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 22px;
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* LEFT */
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.logo {
+  width: 36px;
+  height: 36px;
+}
+
+.brand {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  white-space: nowrap;
+}
+
+/* CENTER */
+
+.nav-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.main-h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* RIGHT */
+
+.nav-right {
+  position: relative;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}
+
+/* avatar */
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* teacher name */
+
+.teacher-info {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* dropdown */
+
+.profile-menu {
+  position: absolute;
+  right: 0;
+  top: 55px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px;
+  width: 150px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+.profile-menu p {
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.profile-menu button {
+  width: 100%;
+  padding: 8px;
+  background: var(--danger);
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.profile-menu button:hover {
+  background: #DC2626;
+}
+
+/* ================= TABLET ================= */
+
+@media (max-width: 900px) {
+
+  .main-h2 {
+    font-size: 18px;
+  }
+
+  .teacher-info {
+    display: none;
+  }
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 600px) {
+
+  .brand {
+    display: none;
+  }
+
+  .nav-center {
+    justify-content: flex-start;
+    margin-left: 8px;
+  }
+
+  .main-h2 {
+    font-size: 16px;
+  }
+}

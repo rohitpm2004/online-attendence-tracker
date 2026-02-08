@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./Login.css";
+import API from "../services/api";
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -14,12 +16,10 @@ function Login() {
     setError("");
 
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/teachers/login",
-        { email, password }
-      );
+      const res = await API.post("/teachers/login",{ email, password });
 
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("teacher", JSON.stringify(res.data.teacher));
       navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed");

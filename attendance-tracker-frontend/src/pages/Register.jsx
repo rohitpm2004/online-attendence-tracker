@@ -2,7 +2,8 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./Register.css";
-
+import API from "../services/api";
+import { Link } from "react-router-dom";
 function Register() {
   const [form, setForm] = useState({
     name: "",
@@ -19,7 +20,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/teachers/register", form);
+      await API.post("/teachers/register", form);
       alert("Registration successful");
       navigate("/");
     } catch (err) {
@@ -59,7 +60,7 @@ function Register() {
         </form>
 
         <div className="register-footer">
-          Already have an account? <a href="/">Login</a>
+          Already have an account? <Link to={`/`}>login</Link>
         </div>
       </div>
     </div>

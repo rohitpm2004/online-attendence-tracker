@@ -1,87 +1,212 @@
-/* Page container */
+/* ================= ROOT COLORS ================= */
+
+:root {
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --bg: #F8FAFC;
+  --card: #FFFFFF;
+  --border: #E5E7EB;
+  --text: #111827;
+  --subtext: #6B7280;
+  --table-header: #F1F5F9;
+}
+
+/* ================= PAGE ================= */
+
 .overall-page {
-  padding: 30px;
-  background: #f4f6f8;
+  padding: 24px;
+  background: var(--bg);
   min-height: 100vh;
-  font-family: Arial, sans-serif;
+  font-family: Inter, system-ui, Arial, sans-serif;
 }
 
-/* Heading */
 .overall-page h2 {
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 18px;
+  color: var(--text);
+  font-weight: 600;
 }
 
-/* Export button */
+/* ================= ACTION BAR ================= */
+
+.overall-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* ================= BUTTONS ================= */
+
+.btn,
 .export-btn {
-  background-color: #1e88e5;
+  background-color: var(--primary);
   color: #fff;
   border: none;
-  padding: 10px 18px;
-  border-radius: 6px;
+  padding: 10px 16px;
+  border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
-  margin-bottom: 20px;
+  transition: 0.2s ease;
+  white-space: nowrap;
 }
 
+.btn:hover,
 .export-btn:hover {
-  background-color: #1565c0;
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
-/* Table wrapper */
+.btn:disabled,
+.export-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ================= INPUT ================= */
+
+.input {
+  min-width: 180px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  transition: 0.2s ease;
+  background: white;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+}
+
+/* ================= TABLE CONTAINER ================= */
+
 .table-container {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: var(--card);
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+}
+
+/* SCROLL WRAPPER */
+
+.table-wrapper {
   overflow-x: auto;
 }
 
-/* Table */
+/* ================= TABLE ================= */
+
 .overall-table {
   width: 100%;
   border-collapse: collapse;
+  min-width: 650px;
 }
 
-/* Table header */
-.overall-table thead {
-  background-color: #f1f3f6;
+/* sticky header */
+
+.overall-table thead th {
+  position: sticky;
+  top: 0;
+  background: var(--table-header);
+  z-index: 2;
 }
 
 .overall-table th {
-  padding: 12px;
+  padding: 13px;
   text-align: left;
-  font-size: 14px;
-  font-weight: bold;
-  border-bottom: 2px solid #ddd;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--subtext);
+  border-bottom: 1px solid var(--border);
 }
 
-/* Table body */
 .overall-table td {
-  padding: 10px;
+  padding: 12px;
   font-size: 14px;
-  border-bottom: 1px solid #eee;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
 }
 
-/* Row hover */
 .overall-table tbody tr:hover {
-  background-color: #f9fafc;
+  background-color: #F9FAFB;
 }
 
-/* Empty state */
+/* ================= EMPTY ================= */
+
 .no-data {
   text-align: center;
-  color: #777;
-  padding: 20px;
+  color: var(--subtext);
+  padding: 30px;
+  font-size: 14px;
 }
-.btn {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 5px;
-  background-color: #1976d2;
-  color: white;
-  cursor: pointer;
+
+/* ================= COLLEGE SECTION ================= */
+
+.college-wise-container {
+  margin-top: 40px;
 }
-.btn:hover {
-  background-color: #155fa0;
+
+.college-card {
+  margin-top: 22px;
+  padding: 18px;
+  background: var(--card);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.college-title {
+  margin-bottom: 14px;
+  border-left: 4px solid var(--primary);
+  padding-left: 12px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* TABLET */
+
+@media (max-width: 768px) {
+
+  .overall-page {
+    padding: 18px;
+  }
+
+  .college-card {
+    padding: 14px;
+  }
+}
+
+/* MOBILE */
+
+@media (max-width: 480px) {
+
+  .overall-page {
+    padding: 14px;
+  }
+
+  .overall-page h2 {
+    font-size: 20px;
+  }
+
+  /* stack controls */
+  .overall-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn,
+  .export-btn,
+  .input {
+    width: 100%;
+  }
+
+  .overall-table th,
+  .overall-table td {
+    padding: 10px 8px;
+    font-size: 13px;
+  }
 }

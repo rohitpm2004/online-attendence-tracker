@@ -91,13 +91,56 @@ export const getClassAttendance = async (req, res) => {
 /* =====================================================
    EXPORT ATTENDANCE (EXCEL)
 ===================================================== */
+// export const exportAttendance = async (req, res) => {
+//   try {
+//     const { classId } = req.params;
+
+//     const attendance = await Attendance.find({ class: classId })
+//       .populate("student", "fullName email group college")
+//       .sort({ createdAt: 1 });
+
+//     if (!attendance.length) {
+//       return res.status(404).json({ message: "No attendance data found" });
+//     }
+
+//     const data = attendance.map((record, index) => ({
+//       SNo: index + 1,
+//       FullName: record.student.fullName,
+//       Email: record.student.email,
+//       Group: record.student.group,
+//       College: record.student.college,
+//       Date: record.createdAt.toLocaleDateString(),
+//       Time: record.createdAt.toLocaleTimeString()
+//     }));
+
+//     const worksheet = XLSX.utils.json_to_sheet(data);
+//     const workbook = XLSX.utils.book_new();
+//     XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
+
+//     const filePath = `attendance_${classId}.xlsx`;
+//     XLSX.writeFile(workbook, filePath);
+
+//     res.download(filePath, () => fs.unlinkSync(filePath));
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
 export const exportAttendance = async (req, res) => {
   try {
     const { classId } = req.params;
+    const { college } = req.query; // 👈 important
 
-    const attendance = await Attendance.find({ class: classId })
+    let attendance = await Attendance.find({ class: classId })
       .populate("student", "fullName email group college")
       .sort({ createdAt: 1 });
+
+    // 🔥 FILTER BY COLLEGE
+    if (college) {
+      attendance = attendance.filter(
+        (record) => record.student && record.student.college === college
+      );
+    }
 
     if (!attendance.length) {
       return res.status(404).json({ message: "No attendance data found" });
@@ -117,7 +160,7 @@ export const exportAttendance = async (req, res) => {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
 
-    const filePath = `attendance_${classId}.xlsx`;
+    const filePath = `attendance_${college || "all"}.xlsx`;
     XLSX.writeFile(workbook, filePath);
 
     res.download(filePath, () => fs.unlinkSync(filePath));
@@ -125,6 +168,7 @@ export const exportAttendance = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 /* =====================================================
    ATTENDANCE SUMMARY (MEET STYLE)
@@ -467,37 +511,124 @@ export const getOverallAttendanceSummary = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// export const exportOverallAttendanceExcel = async (req, res) => {
+//   try {
+//     const teacherId = req.user._id;
+
+//     const attendance = await Attendance.find()
+//       .populate({
+//         path: "class",
+//         match: { teacher: teacherId }, // ✅ teacher isolation
+//         select: "className"
+//       })
+//       .populate("student", "fullName email group college");
+
+//     // ❗ keep only this teacher's data
+//     const filtered = attendance.filter(a => a.class && a.student);
+
+//     // ================= HEADERS =================
+//     const headersSet = new Set();
+
+//     filtered.forEach(r => {
+//       const date = r.createdAt.toISOString().split("T")[0];
+//       headersSet.add(`${date} - ${r.class.className}`);
+//     });
+
+//     const dynamicHeaders = [...headersSet].sort();
+
+//     // ================= STUDENT MAP =================
+//     const map = {};
+
+//     filtered.forEach(r => {
+//       const s = r.student;
+//       const header = `${r.createdAt.toISOString().split("T")[0]} - ${r.class.className}`;
+
+//       if (!map[s.email]) {
+//         map[s.email] = {
+//           FullName: s.fullName,
+//           Email: s.email,
+//           Group: s.group,
+//           College: s.college,
+//           attended: new Set()
+//         };
+//       }
+
+//       map[s.email].attended.add(header);
+//     });
+
+//     // total classes ONLY for this teacher
+//     const totalClassesCount = await Class.countDocuments({
+//       teacher: teacherId
+//     });
+
+//     const rows = Object.values(map)
+//       .sort((a, b) => (a.College || "").localeCompare(b.College || ""))
+//       .map(student => {
+//         const row = {
+//           FullName: student.FullName,
+//           Email: student.Email,
+//           Group: student.Group,
+//           College: student.College
+//         };
+
+//         let totalJoinings = 0;
+
+//         dynamicHeaders.forEach(h => {
+//           if (student.attended.has(h)) {
+//             row[h] = 1;
+//             totalJoinings++;
+//           } else {
+//             row[h] = "";
+//           }
+//         });
+
+//         row["Total Joinings"] = totalJoinings;
+//         row["Total Classes"] = totalClassesCount;
+
+//         return row;
+//       });
+
+//     const worksheet = XLSX.utils.json_to_sheet(rows);
+//     const workbook = XLSX.utils.book_new();
+//     XLSX.utils.book_append_sheet(workbook, worksheet, "Overall Attendance");
+
+//     const filePath = `overall_attendance_${teacherId}.xlsx`;
+//     XLSX.writeFile(workbook, filePath);
+
+//     res.download(filePath, () => fs.unlinkSync(filePath));
+
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+
 export const exportOverallAttendanceExcel = async (req, res) => {
   try {
     const teacherId = req.user._id;
+    const selectedCollege = req.query.college; // ⭐ NEW
 
     const attendance = await Attendance.find()
       .populate({
         path: "class",
-        match: { teacher: teacherId }, // ✅ teacher isolation
+        match: { teacher: teacherId },
         select: "className"
       })
       .populate("student", "fullName email group college");
 
-    // ❗ keep only this teacher's data
     const filtered = attendance.filter(a => a.class && a.student);
 
-    // ================= HEADERS =================
-    const headersSet = new Set();
-
-    filtered.forEach(r => {
-      const date = r.createdAt.toISOString().split("T")[0];
-      headersSet.add(`${date} - ${r.class.className}`);
-    });
-
-    const dynamicHeaders = [...headersSet].sort();
-
-    // ================= STUDENT MAP =================
     const map = {};
 
     filtered.forEach(r => {
       const s = r.student;
-      const header = `${r.createdAt.toISOString().split("T")[0]} - ${r.class.className}`;
+
+      // ⭐ FILTER BY COLLEGE
+      if (selectedCollege && s.college !== selectedCollege) return;
+
+      const date = r.createdAt.toISOString().split("T")[0];
+      const header = `${date} - ${r.class.className}`;
 
       if (!map[s.email]) {
         map[s.email] = {
@@ -505,58 +636,35 @@ export const exportOverallAttendanceExcel = async (req, res) => {
           Email: s.email,
           Group: s.group,
           College: s.college,
-          attended: new Set()
+          classes: new Set()
         };
       }
 
-      map[s.email].attended.add(header);
+      map[s.email].classes.add(header);
     });
 
-    // total classes ONLY for this teacher
-    const totalClassesCount = await Class.countDocuments({
-      teacher: teacherId
-    });
-
-    const rows = Object.values(map)
-      .sort((a, b) => (a.College || "").localeCompare(b.College || ""))
-      .map(student => {
-        const row = {
-          FullName: student.FullName,
-          Email: student.Email,
-          Group: student.Group,
-          College: student.College
-        };
-
-        let totalJoinings = 0;
-
-        dynamicHeaders.forEach(h => {
-          if (student.attended.has(h)) {
-            row[h] = 1;
-            totalJoinings++;
-          } else {
-            row[h] = "";
-          }
-        });
-
-        row["Total Joinings"] = totalJoinings;
-        row["Total Classes"] = totalClassesCount;
-
-        return row;
-      });
+    const rows = Object.values(map).map(student => ({
+      FullName: student.FullName,
+      Email: student.Email,
+      Group: student.Group,
+      College: student.College,
+      TotalClassesJoined: student.classes.size,
+      Classes: Array.from(student.classes).join(", ")
+    }));
 
     const worksheet = XLSX.utils.json_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Overall Attendance");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
 
-    const filePath = `overall_attendance_${teacherId}.xlsx`;
-    XLSX.writeFile(workbook, filePath);
+    const fileName = selectedCollege
+      ? `${selectedCollege}_attendance.xlsx`
+      : `overall_attendance.xlsx`;
 
-    res.download(filePath, () => fs.unlinkSync(filePath));
+    XLSX.writeFile(workbook, fileName);
+    res.download(fileName, () => fs.unlinkSync(fileName));
 
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
-
-

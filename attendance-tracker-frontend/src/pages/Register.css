@@ -1,78 +1,152 @@
-/* Page background */
+/* ================= GLOBAL ================= */
+
+:root {
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --bg: #F8FAFC;
+  --card: #FFFFFF;
+  --border: #E5E7EB;
+  --text: #111827;
+  --subtext: #6B7280;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Inter, system-ui, Arial, sans-serif;
+}
+
+/* ================= PAGE ================= */
+
 .register-page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f4f6f8;
-  font-family: Arial, sans-serif;
+  background: var(--bg);
+  padding: 20px;
 }
 
-/* Card */
+/* ================= CARD ================= */
+
 .register-card {
-  background: #ffffff;
-  padding: 30px;
-  width: 340px;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  background: var(--card);
+  padding: 32px;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
 }
 
-/* Heading */
+/* ================= HEADING ================= */
+
 .register-card h2 {
   text-align: center;
-  margin-bottom: 20px;
-  color: #333;
+  margin-bottom: 22px;
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: 0.3px;
 }
 
-/* Form */
+/* ================= FORM ================= */
+
 .register-card form {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-/* Inputs */
+/* ================= INPUTS ================= */
+
 .register-card input {
-  padding: 10px;
+  padding: 12px 14px;
   font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   outline: none;
+  transition: all 0.2s ease;
+  background: #fff;
+}
+
+.register-card input::placeholder {
+  color: var(--subtext);
 }
 
 .register-card input:focus {
-  border-color: #1e88e5;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
-/* Button */
+/* ================= BUTTON ================= */
+
 .register-card button {
   margin-top: 10px;
-  padding: 10px;
-  background-color: #1e88e5;
-  color: #ffffff;
+  padding: 12px;
+  background-color: var(--primary);
+  color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .register-card button:hover {
-  background-color: #1565c0;
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
 }
 
-/* Small text / links (optional) */
+.register-card button:active {
+  transform: translateY(0);
+}
+
+/* ================= FOOTER ================= */
+
 .register-footer {
   text-align: center;
-  margin-top: 12px;
+  margin-top: 14px;
   font-size: 13px;
-  color: #666;
+  color: var(--subtext);
 }
 
 .register-footer a {
-  color: #1e88e5;
+  color: var(--primary);
   text-decoration: none;
+  font-weight: 500;
 }
 
 .register-footer a:hover {
   text-decoration: underline;
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Mobile small */
+@media (max-width: 400px) {
+  .register-card {
+    padding: 24px;
+    border-radius: 14px;
+  }
+
+  .register-card h2 {
+    font-size: 20px;
+  }
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+  .register-card {
+    max-width: 420px;
+    padding: 36px;
+  }
+}
+
+/* Large screens */
+@media (min-width: 1200px) {
+  .register-card {
+    max-width: 440px;
+  }
 }

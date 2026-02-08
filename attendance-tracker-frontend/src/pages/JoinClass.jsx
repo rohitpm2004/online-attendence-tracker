@@ -1,15 +1,12 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import API from "../services/api";
 import "./JoinClass.css";
 
 const JoinClass = () => {
   const { classCode } = useParams();
 
-  // 🔹 Load saved student profile (if exists)
-  const savedProfile = JSON.parse(
-    localStorage.getItem("studentProfile")
-  );
+  const savedProfile = JSON.parse(localStorage.getItem("studentProfile"));
 
   const [formData, setFormData] = useState({
     fullName: savedProfile?.fullName || "",
@@ -18,21 +15,34 @@ const JoinClass = () => {
     college: savedProfile?.college || ""
   });
 
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
   const [classInfo, setClassInfo] = useState(null);
   const [timeLeft, setTimeLeft] = useState("");
   const [expired, setExpired] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
   /* ================= FETCH CLASS INFO ================= */
+
   useEffect(() => {
-    axios
-      .get(`http://localhost:5000/api/classes/by-code/${classCode}`)
-      .then((res) => setClassInfo(res.data))
-      .catch(() => setExpired(true));
+    const fetchClass = async () => {
+      try {
+        const res = await API.get(`/classes/by-code/${classCode}`);
+        setClassInfo(res.data);
+      } catch {
+        setError("Invalid or expired class link");
+        setExpired(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchClass();
   }, [classCode]);
 
   /* ================= COUNTDOWN ================= */
+
   useEffect(() => {
     if (!classInfo?.expiresAt) return;
 
@@ -48,77 +58,84 @@ const JoinClass = () => {
         return;
       }
 
-      const hrs = Math.floor(diff / (1000 * 60 * 60));
-      const mins = Math.floor((diff / (1000 * 60)) % 60);
-      const secs = Math.floor((diff / 1000) % 60);
+      const mins = Math.floor(diff / 60000);
+      const secs = Math.floor((diff % 60000) / 1000);
 
-      setTimeLeft(`${hrs}h ${mins}m ${secs}s`);
+      setTimeLeft(`${mins}m ${secs}s`);
     }, 1000);
 
     return () => clearInterval(interval);
   }, [classInfo]);
 
   /* ================= INPUT HANDLER ================= */
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
-      [name]:
-        name === "email"
-          ? value.toLowerCase()
-          : value.toUpperCase()
-    });
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === "email" ? value.toLowerCase() : value
+    }));
   };
 
   /* ================= SUBMIT ================= */
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (expired) return;
 
+    setError("");
+    setMessage("");
+
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/attendance/mark",
-        { ...formData, classCode }
-      );
+      const res = await API.post("/attendance/mark", {
+        ...formData,
+        classCode
+      });
 
-      // ✅ SAVE / UPDATE STUDENT PROFILE
-      localStorage.setItem(
-        "studentProfile",
-        JSON.stringify(formData)
-      );
+      localStorage.setItem("studentProfile", JSON.stringify(formData));
 
-      setMessage(res.data.message);
-      setError("");
+      setMessage(res.data.message || "Attendance marked successfully");
 
       if (res.data.meetLink) {
-        window.open(res.data.meetLink, "_blank");
+        setTimeout(() => window.open(res.data.meetLink, "_blank"), 800);
       }
+
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-        "Something went wrong"
-      );
+      setError(err.response?.data?.message || "Unable to mark attendance");
     }
   };
+
+  /* ================= UI ================= */
+
+  if (loading) {
+    return (
+      <div className="join-page">
+        <div className="join-card">
+          <p>Loading class...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="join-page">
       <div className="join-card">
-        <h2>{classInfo?.className}</h2>
+
+        <h2>{classInfo?.className || "Class"}</h2>
         <p><b>Subject:</b> {classInfo?.subject}</p>
 
-        {/* ⏳ COUNTDOWN */}
+        {/* COUNTDOWN */}
         {!expired ? (
           <p className="countdown">⏳ Time left: {timeLeft}</p>
         ) : (
           <p className="expired">❌ Class link expired</p>
         )}
 
-        {/* ✅ UX NOTE */}
+        {/* PREFILL INFO */}
         {savedProfile && !expired && (
           <p className="prefill-note">
-            ✅ We’ve pre-filled your details. Please review and update if required.
+            Details auto-filled — please verify before submitting
           </p>
         )}
 
@@ -127,6 +144,7 @@ const JoinClass = () => {
 
         {!expired && (
           <form onSubmit={handleSubmit} className="join-form">
+
             <input
               name="fullName"
               placeholder="Full Name"
@@ -144,34 +162,30 @@ const JoinClass = () => {
               required
             />
 
-            <input
-              name="group"
-              placeholder="Group"
-              value={formData.group}
-              onChange={handleChange}
-              required
-            />
+            <select name="group" value={formData.group} onChange={handleChange} required>
+              <option value="">Select Group</option>
+              <option value="BSC">BSC</option>
+              <option value="BCOM">BCOM</option>
+              <option value="BA">BA</option>
+              <option value="BCA">BCA</option>
+            </select>
 
-            <select
-              name="college"
-              value={formData.college}
-              onChange={handleChange}
-              required
-            >
+            <select name="college" value={formData.college} onChange={handleChange} required>
               <option value="">Select College</option>
               <option value="CITY COLLEGE">City College</option>
               <option value="VIVEKANANDA COLLEGE">Vivekananda College</option>
               <option value="BJR COLLEGE">BJR College</option>
-                <option value="MALKAJIGIRI COLLEGE">Malkajigiri College</option>
-                <option value="GOLCONDA COLLEGE">Golconda College</option>
-                <option value="HUSSAINI ALAM COLLEGE">Hussaini Alam College</option>
-                <option value="BEGUMPET COLLEGE">Begumpet College</option>
-              <option value="OTHER">Other</option>
+              <option value="MALKAJIGIRI COLLEGE">Malkajigiri College</option>
+              <option value="GOLCONDA COLLEGE">Golconda College</option>
+              <option value="HUSSAINI ALAM COLLEGE">Hussaini Alam College</option>
+              <option value="BEGUMPET COLLEGE">Begumpet College</option>
+               
             </select>
 
             <button type="submit">Mark Attendance</button>
           </form>
         )}
+
       </div>
     </div>
   );
