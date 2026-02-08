@@ -21,15 +21,22 @@ const handleSubmit = async (e) => {
   e.preventDefault();
 
   try {
-    const res = await API.post("/classes/create", form);
+    // convert local time (IST) → UTC ISO string
+    const utcDate = new Date(form.expiresAt).toISOString();
+
+    const res = await API.post("/classes/create", {
+      ...form,
+      expiresAt: utcDate
+    });
 
     alert("Class created successfully");
-
     navigate(`/class/${res.data._id}`);
+
   } catch (err) {
     alert(err.response?.data?.message || "Failed to create class");
   }
 };
+
 
 
 

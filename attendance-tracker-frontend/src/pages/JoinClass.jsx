@@ -43,29 +43,38 @@ const JoinClass = () => {
 
   /* ================= COUNTDOWN ================= */
 
-  useEffect(() => {
-    if (!classInfo?.expiresAt) return;
+  /* ================= COUNTDOWN (FIXED TIMEZONE) ================= */
 
-    const interval = setInterval(() => {
-      const now = new Date();
-      const expiry = new Date(classInfo.expiresAt);
-      const diff = expiry - now;
+useEffect(() => {
+  if (!classInfo?.expiresAt) return;
 
-      if (diff <= 0) {
-        setExpired(true);
-        setTimeLeft("Expired");
-        clearInterval(interval);
-        return;
-      }
+  const expiryUTC = new Date(classInfo.expiresAt).getTime();
 
-      const mins = Math.floor(diff / 60000);
-      const secs = Math.floor((diff % 60000) / 1000);
+  const interval = setInterval(() => {
+    const nowUTC = Date.now(); // always UTC safe
+    const diff = expiryUTC - nowUTC;
 
-      setTimeLeft(`${mins}m ${secs}s`);
-    }, 1000);
+    if (isNaN(diff)) return;
 
-    return () => clearInterval(interval);
-  }, [classInfo]);
+    if (diff <= 0) {
+      setExpired(true);
+      setTimeLeft("Expired");
+      clearInterval(interval);
+      return;
+    }
+
+    const totalSeconds = Math.floor(diff / 1000);
+
+    const hrs = Math.floor(totalSeconds / 3600);
+    const mins = Math.floor((totalSeconds % 3600) / 60);
+    const secs = totalSeconds % 60;
+
+    setTimeLeft(`${hrs}h ${mins}m ${secs}s`);
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, [classInfo]);
+
 
   /* ================= INPUT HANDLER ================= */
 
@@ -192,3 +201,5 @@ const JoinClass = () => {
 };
 
 export default JoinClass;
+
+ 
