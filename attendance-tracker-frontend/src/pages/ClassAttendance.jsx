@@ -108,7 +108,7 @@ function ClassAttendance() {
 
       {/* TOP ACTIONS */}
       <div className="card">
-        <button className="btn" onClick={() => navigate("/dashboard")}>
+        <button className="btn" onClick={() => navigate(-1)}>
           ← Back to Dashboard
         </button>
 

@@ -88,43 +88,6 @@ export const getClassAttendance = async (req, res) => {
   }
 };
 
-/* =====================================================
-   EXPORT ATTENDANCE (EXCEL)
-===================================================== */
-// export const exportAttendance = async (req, res) => {
-//   try {
-//     const { classId } = req.params;
-
-//     const attendance = await Attendance.find({ class: classId })
-//       .populate("student", "fullName email group college")
-//       .sort({ createdAt: 1 });
-
-//     if (!attendance.length) {
-//       return res.status(404).json({ message: "No attendance data found" });
-//     }
-
-//     const data = attendance.map((record, index) => ({
-//       SNo: index + 1,
-//       FullName: record.student.fullName,
-//       Email: record.student.email,
-//       Group: record.student.group,
-//       College: record.student.college,
-//       Date: record.createdAt.toLocaleDateString(),
-//       Time: record.createdAt.toLocaleTimeString()
-//     }));
-
-//     const worksheet = XLSX.utils.json_to_sheet(data);
-//     const workbook = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
-
-//     const filePath = `attendance_${classId}.xlsx`;
-//     XLSX.writeFile(workbook, filePath);
-
-//     res.download(filePath, () => fs.unlinkSync(filePath));
-//   } catch (error) {
-//     res.status(500).json({ message: error.message });
-//   }
-// };
 
 export const exportAttendance = async (req, res) => {
   try {
@@ -323,17 +286,24 @@ export const getCollegeGroupWiseAttendance = async (req, res) => {
 
 // export const getOverallAttendanceSummary = async (req, res) => {
 //   try {
+//     const teacherId = req.user._id;
+
 //     const attendance = await Attendance.find()
-//       .populate("student", "fullName email group college")
-//       .populate("class", "className");
+//       .populate({
+//         path: "class",
+//         match: { teacher: teacherId }, // ✅ teacher isolation
+//         select: "className"
+//       })
+//       .populate("student", "fullName email group college");
+
+//     // ❗ remove records of other teachers
+//     const filtered = attendance.filter(a => a.class && a.student);
 
 //     const map = {};
 
-//     attendance.forEach((record) => {
+//     filtered.forEach(record => {
 //       const s = record.student;
 //       const c = record.class;
-
-//       if (!s || !c) return;
 
 //       if (!map[s.email]) {
 //         map[s.email] = {
@@ -341,58 +311,60 @@ export const getCollegeGroupWiseAttendance = async (req, res) => {
 //           email: s.email,
 //           group: s.group,
 //           college: s.college,
-//           totalClassesJoined: 1,
-//           classes: [c.className]
+//           classes: new Set()
 //         };
-//       } else {
-//         // prevent duplicate class names
-//         if (!map[s.email].classes.includes(c.className)) {
-//           map[s.email].classes.push(c.className);
-//           map[s.email].totalClassesJoined += 1;
-//         }
 //       }
+
+//       map[s.email].classes.add(c.className);
 //     });
 
-//     // 🔽 SORT BY COLLEGE NAME (A → Z)
-//     const sortedResult = Object.values(map).sort((a, b) =>
-//       (a.college || "").localeCompare(b.college || "")
-//     );
+//     const result = Object.values(map)
+//       .map(s => ({
+//         fullName: s.fullName,
+//         email: s.email,
+//         group: s.group,
+//         college: s.college,
+//         totalClassesJoined: s.classes.size,
+//         classes: [...s.classes]
+//       }))
+//       .sort((a, b) =>
+//         (a.college || "").localeCompare(b.college || "")
+//       );
 
-//     res.status(200).json(sortedResult);
+//     res.status(200).json(result);
+
 //   } catch (error) {
+//     console.error(error);
 //     res.status(500).json({ message: error.message });
 //   }
 // };
- 
+
+
 // export const exportOverallAttendanceExcel = async (req, res) => {
 //   try {
+//     const teacherId = req.user._id;
+//     const selectedCollege = req.query.college; // ⭐ NEW
+
 //     const attendance = await Attendance.find()
-//       .populate("student", "fullName email group college")
-//       .populate("class", "className");
+//       .populate({
+//         path: "class",
+//         match: { teacher: teacherId },
+//         select: "className"
+//       })
+//       .populate("student", "fullName email group college");
 
-//     // 🧠 Step 1: Collect unique DATE + CLASS headers
-//     const headersSet = new Set();
+//     const filtered = attendance.filter(a => a.class && a.student);
 
-//     attendance.forEach((r) => {
-//       if (!r.student || !r.class) return;
+//     const map = {};
+
+//     filtered.forEach(r => {
+//       const s = r.student;
+
+//       // ⭐ FILTER BY COLLEGE
+//       if (selectedCollege && s.college !== selectedCollege) return;
 
 //       const date = r.createdAt.toISOString().split("T")[0];
 //       const header = `${date} - ${r.class.className}`;
-//       headersSet.add(header);
-//     });
-
-//     const dynamicHeaders = Array.from(headersSet).sort();
-
-//     // 🧠 Step 2: Build student map
-//     const map = {};
-
-//     attendance.forEach((r) => {
-//       const s = r.student;
-//       const c = r.class;
-//       if (!s || !c) return;
-
-//       const date = r.createdAt.toISOString().split("T")[0];
-//       const header = `${date} - ${c.className}`;
 
 //       if (!map[s.email]) {
 //         map[s.email] = {
@@ -400,76 +372,53 @@ export const getCollegeGroupWiseAttendance = async (req, res) => {
 //           Email: s.email,
 //           Group: s.group,
 //           College: s.college,
-//           attended: new Set()
+//           classes: new Set()
 //         };
 //       }
 
-//       map[s.email].attended.add(header);
+//       map[s.email].classes.add(header);
 //     });
-//     // total number of classes in system
-// const totalClassesCount = await Class.countDocuments();
 
-// const rows = Object.values(map)
-//   .sort((a, b) => (a.College || "").localeCompare(b.College || ""))
-//   .map((student) => {
-
-//     const row = {
+//     const rows = Object.values(map).map(student => ({
 //       FullName: student.FullName,
 //       Email: student.Email,
 //       Group: student.Group,
-//       College: student.College
-//     };
+//       College: student.College,
+//       TotalClassesJoined: student.classes.size,
+//       Classes: Array.from(student.classes).join(", ")
+//     }));
 
-//     let totalJoinings = 0;
-
-//     dynamicHeaders.forEach((h) => {
-//       if (student.attended.has(h)) {
-//         row[h] = 1;
-//         totalJoinings++;
-//       } else {
-//         row[h] = "";
-//       }
-//     });
-
-//     row["Total Joinings"] = totalJoinings;
-//     row["Total Classes"] = totalClassesCount; // ✅ ALWAYS 7
-
-//     return row;
-//   });
-
-      
-//     rows.sort((a, b) =>
-//       (a.College || "").localeCompare(b.College || "")
-//     );
-
-//     // 🧠 Step 4: Create Excel
 //     const worksheet = XLSX.utils.json_to_sheet(rows);
 //     const workbook = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(workbook, worksheet, "Overall Attendance");
+//     XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
 
-//     const filePath = "overall_attendance.xlsx";
-//     XLSX.writeFile(workbook, filePath);
+//     const fileName = selectedCollege
+//       ? `${selectedCollege}_attendance.xlsx`
+//       : `overall_attendance.xlsx`;
 
-//     res.download(filePath, () => fs.unlinkSync(filePath));
+//     XLSX.writeFile(workbook, fileName);
+//     res.download(fileName, () => fs.unlinkSync(fileName));
 
 //   } catch (error) {
 //     console.error(error);
 //     res.status(500).json({ message: error.message });
 //   }
 // };
+
+
 export const getOverallAttendanceSummary = async (req, res) => {
   try {
     const teacherId = req.user._id;
+    const { branchId } = req.params;
 
     const attendance = await Attendance.find()
       .populate({
         path: "class",
-        match: { teacher: teacherId }, // ✅ teacher isolation
+        match: { teacher: teacherId, branch: branchId }, // ⭐ branch filter
         select: "className"
       })
       .populate("student", "fullName email group college");
 
-    // ❗ remove records of other teachers
     const filtered = attendance.filter(a => a.class && a.student);
 
     const map = {};
@@ -500,48 +449,40 @@ export const getOverallAttendanceSummary = async (req, res) => {
         totalClassesJoined: s.classes.size,
         classes: [...s.classes]
       }))
-      .sort((a, b) =>
-        (a.college || "").localeCompare(b.college || "")
-      );
+      .sort((a, b) => (a.college || "").localeCompare(b.college || ""));
 
     res.status(200).json(result);
 
   } catch (error) {
-    console.error(error);
     res.status(500).json({ message: error.message });
   }
 };
+
 // export const exportOverallAttendanceExcel = async (req, res) => {
 //   try {
 //     const teacherId = req.user._id;
+//     const { branchId } = req.params;
+//     const selectedCollege = req.query.college;
 
 //     const attendance = await Attendance.find()
 //       .populate({
 //         path: "class",
-//         match: { teacher: teacherId }, // ✅ teacher isolation
+//         match: { teacher: teacherId, branch: branchId }, // ⭐ branch filter
 //         select: "className"
 //       })
 //       .populate("student", "fullName email group college");
 
-//     // ❗ keep only this teacher's data
 //     const filtered = attendance.filter(a => a.class && a.student);
 
-//     // ================= HEADERS =================
-//     const headersSet = new Set();
-
-//     filtered.forEach(r => {
-//       const date = r.createdAt.toISOString().split("T")[0];
-//       headersSet.add(`${date} - ${r.class.className}`);
-//     });
-
-//     const dynamicHeaders = [...headersSet].sort();
-
-//     // ================= STUDENT MAP =================
 //     const map = {};
 
 //     filtered.forEach(r => {
 //       const s = r.student;
-//       const header = `${r.createdAt.toISOString().split("T")[0]} - ${r.class.className}`;
+
+//       if (selectedCollege && s.college !== selectedCollege) return;
+
+//       const date = r.createdAt.toISOString().split("T")[0];
+//       const header = `${date} - ${r.class.className}`;
 
 //       if (!map[s.email]) {
 //         map[s.email] = {
@@ -549,86 +490,74 @@ export const getOverallAttendanceSummary = async (req, res) => {
 //           Email: s.email,
 //           Group: s.group,
 //           College: s.college,
-//           attended: new Set()
+//           classes: new Set()
 //         };
 //       }
 
-//       map[s.email].attended.add(header);
+//       map[s.email].classes.add(header);
 //     });
 
-//     // total classes ONLY for this teacher
-//     const totalClassesCount = await Class.countDocuments({
-//       teacher: teacherId
-//     });
-
-//     const rows = Object.values(map)
-//       .sort((a, b) => (a.College || "").localeCompare(b.College || ""))
-//       .map(student => {
-//         const row = {
-//           FullName: student.FullName,
-//           Email: student.Email,
-//           Group: student.Group,
-//           College: student.College
-//         };
-
-//         let totalJoinings = 0;
-
-//         dynamicHeaders.forEach(h => {
-//           if (student.attended.has(h)) {
-//             row[h] = 1;
-//             totalJoinings++;
-//           } else {
-//             row[h] = "";
-//           }
-//         });
-
-//         row["Total Joinings"] = totalJoinings;
-//         row["Total Classes"] = totalClassesCount;
-
-//         return row;
-//       });
+//     const rows = Object.values(map).map(student => ({
+//       FullName: student.FullName,
+//       Email: student.Email,
+//       Group: student.Group,
+//       College: student.College,
+//       TotalClassesJoined: student.classes.size,
+//       Classes: Array.from(student.classes).join(", ")
+//     }));
 
 //     const worksheet = XLSX.utils.json_to_sheet(rows);
 //     const workbook = XLSX.utils.book_new();
-//     XLSX.utils.book_append_sheet(workbook, worksheet, "Overall Attendance");
+//     XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
 
-//     const filePath = `overall_attendance_${teacherId}.xlsx`;
-//     XLSX.writeFile(workbook, filePath);
+//     const fileName = selectedCollege
+//       ? `${selectedCollege}_${branchId}_attendance.xlsx`
+//       : `branch_${branchId}_attendance.xlsx`;
 
-//     res.download(filePath, () => fs.unlinkSync(filePath));
+//     XLSX.writeFile(workbook, fileName);
+//     res.download(fileName, () => fs.unlinkSync(fileName));
 
 //   } catch (error) {
-//     console.error(error);
 //     res.status(500).json({ message: error.message });
 //   }
 // };
-
-
 export const exportOverallAttendanceExcel = async (req, res) => {
   try {
     const teacherId = req.user._id;
-    const selectedCollege = req.query.college; // ⭐ NEW
+    const { branchId } = req.params;
+    const selectedCollege = req.query.college;
 
-    const attendance = await Attendance.find()
-      .populate({
-        path: "class",
-        match: { teacher: teacherId },
-        select: "className"
-      })
-      .populate("student", "fullName email group college");
+    /* ================= GET TOTAL CLASSES IN BRANCH ================= */
 
-    const filtered = attendance.filter(a => a.class && a.student);
+    const branchClasses = await Class.find({
+      teacher: teacherId,
+      branch: branchId
+    }).select("_id className createdAt");
+
+    const totalClasses = branchClasses.length;
+
+    const classIdSet = new Set(branchClasses.map(c => c._id.toString()));
+
+    /* ================= GET ATTENDANCE ================= */
+
+    const attendance = await Attendance.find({
+      class: { $in: [...classIdSet] }
+    })
+    .populate("class", "className createdAt")
+    .populate("student", "fullName email group college");
+
+    /* ================= BUILD STUDENT MAP ================= */
 
     const map = {};
 
-    filtered.forEach(r => {
+    attendance.forEach(r => {
       const s = r.student;
+      if (!s) return;
 
-      // ⭐ FILTER BY COLLEGE
       if (selectedCollege && s.college !== selectedCollege) return;
 
-      const date = r.createdAt.toISOString().split("T")[0];
-      const header = `${date} - ${r.class.className}`;
+      const classDate = r.class.createdAt.toISOString().split("T")[0];
+      const label = `${classDate} - ${r.class.className}`;
 
       if (!map[s.email]) {
         map[s.email] = {
@@ -636,29 +565,41 @@ export const exportOverallAttendanceExcel = async (req, res) => {
           Email: s.email,
           Group: s.group,
           College: s.college,
-          classes: new Set()
+          attended: new Set()
         };
       }
 
-      map[s.email].classes.add(header);
+      map[s.email].attended.add(label);
     });
+
+    /* ================= FORMAT ROWS ================= */
 
     const rows = Object.values(map).map(student => ({
       FullName: student.FullName,
       Email: student.Email,
       Group: student.Group,
       College: student.College,
-      TotalClassesJoined: student.classes.size,
-      Classes: Array.from(student.classes).join(", ")
+
+      TotalClasses: totalClasses, // ⭐ FIX ADDED
+      TotalClassesJoined: student.attended.size,
+
+      AttendancePercentage:
+        totalClasses === 0
+          ? "0%"
+          : Math.round((student.attended.size / totalClasses) * 100) + "%",
+
+      Classes: Array.from(student.attended).join(", ")
     }));
+
+    /* ================= EXCEL ================= */
 
     const worksheet = XLSX.utils.json_to_sheet(rows);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Attendance");
 
-    const fileName = selectedCollege
-      ? `${selectedCollege}_attendance.xlsx`
-      : `overall_attendance.xlsx`;
+    const fileName = selectedCollege 
+      ? `${selectedCollege}_${branchId}_attendance.xlsx`
+      : `branch_${branchId}_attendance.xlsx`;
 
     XLSX.writeFile(workbook, fileName);
     res.download(fileName, () => fs.unlinkSync(fileName));

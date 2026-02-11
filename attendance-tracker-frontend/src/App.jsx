@@ -46,24 +46,26 @@ import JoinClass from "./pages/JoinClass";
 import OverallAttendance from "./pages/OverallAttendance";
 import EditClass from "./pages/EditClass";
 import TeacherLayout from "./layout/TeacherLayout";
-
+import BranchDashboard from "./pages/BranchDashboard";
+import Branches from "./pages/Branches";
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* PUBLIC ROUTES (NO NAVBAR) */}
         <Route path="/join/:classCode" element={<JoinClass />} />
 
         {/* TEACHER ROUTES (WITH NAVBAR) */}
         <Route element={<TeacherLayout />}>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Login />}/>
           <Route path="/register" element={<Register />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/create-class" element={<CreateClass />} />
+          <Route path="/dashboard/:branchId" element={<Dashboard />} />
+          <Route path="/create-class/:branchId" element={<CreateClass />} />
           <Route path="/class/:id" element={<ClassAttendance />} />
-          <Route path="/overall-attendance" element={<OverallAttendance />} />
+          <Route path="/overall-attendance/:branchId" element={<OverallAttendance />} />
           <Route path="/edit-class/:id" element={<EditClass />} />
+          <Route path="/branches" element={<Branches />} />
+          <Route path="/branch/:branchId" element={<BranchDashboard />} />
         </Route>
 
       </Routes>
@@ -72,3 +74,4 @@ function App() {
 }
 
 export default App;
+

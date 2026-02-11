@@ -111,6 +111,11 @@
   font-weight: 500;
   white-space: nowrap;
 }
+.class-h2{
+  margin-top: 20px;
+   
+  font-size: 30px;
+}
 
 .btn-view { background: var(--primary); color: white; }
 .btn-view:hover { background: var(--primary-hover); }

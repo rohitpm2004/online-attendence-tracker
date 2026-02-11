@@ -18,16 +18,18 @@ router.get(
   getCollegeGroupWiseAttendance
 );
 router.get(
-  "/overall",
+  "/overall/:branchId",
   protect,
   getOverallAttendanceSummary
 );
 
 router.get(
-  "/overall/export",
+  "/overall/export/:branchId",
   protect,
   exportOverallAttendanceExcel
 );
 
+// router.get("/overall/:branchId", protect, getOverallAttendanceSummary);
+// router.get("/overall/export/:branchId", protect, exportOverallAttendanceExcel);
 
 export default router;

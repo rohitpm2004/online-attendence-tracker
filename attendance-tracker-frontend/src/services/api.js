@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://online-attendence-tracker-1.onrender.com/api"
+  baseURL: "http://localhost:5000/api"
 });
 
 // 🔐 Attach token to EVERY request
@@ -16,4 +16,4 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export default API;
+export default API; 
