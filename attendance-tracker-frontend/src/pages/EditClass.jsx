@@ -6,6 +6,8 @@ function EditClass() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  const [branchId, setBranchId] = useState(null);
+
   const [form, setForm] = useState({
     className: "",
     subject: "",
@@ -13,30 +15,45 @@ function EditClass() {
     expiresAt: ""
   });
 
+  /* ================= LOAD SINGLE CLASS ================= */
   useEffect(() => {
-    API.get(`/classes/my`)
-      .then(res => {
-        const cls = res.data.find(c => c._id === id);
-        if (cls) {
-          setForm({
-            className: cls.className,
-            subject: cls.subject,
-            meetLink: cls.meetLink,
-            expiresAt: cls.expiresAt?.slice(0, 16)
-          });
-        }
-      });
+    const fetchClass = async () => {
+      try {
+        const res = await API.get(`/classes/single/${id}`);
+
+        const cls = res.data;
+
+        setBranchId(cls.branch?._id); // ⭐ store branch
+
+        setForm({
+          className: cls.className,
+          subject: cls.subject,
+          meetLink: cls.meetLink,
+          expiresAt: cls.expiresAt?.slice(0, 16)
+        });
+
+      } catch (err) {
+        alert("Failed to load class");
+      }
+    };
+
+    fetchClass();
   }, [id]);
 
+  /* ================= HANDLE INPUT ================= */
   const handleChange = e =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  /* ================= UPDATE ================= */
   const handleSubmit = async e => {
     e.preventDefault();
 
     await API.put(`/classes/update/${id}`, form);
+
     alert("Class updated successfully");
-    navigate("/dashboard");
+
+    // ⭐ navigate back to SAME BRANCH
+    navigate(branchId ? `/dashboard/${branchId}` : "/branches");
   };
 
   return (
