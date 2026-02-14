@@ -53,7 +53,7 @@ function EditClass() {
     alert("Class updated successfully");
 
     // ⭐ navigate back to SAME BRANCH
-    navigate(branchId ? `/dashboard/${branchId}` : "/branches");
+    navigate(branchId ? `/dashboard/${branchId}`:"/branches");
   };
 
   return (
